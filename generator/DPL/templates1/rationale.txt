@@ -1,0 +1,4 @@
+
+feature rect was evolved to allow drawing filled rectangles.
+
+

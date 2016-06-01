@@ -1,0 +1,3 @@
+
+feature line was evolved so that the program does not crash anymore when the user only clicks while drawing lines
+

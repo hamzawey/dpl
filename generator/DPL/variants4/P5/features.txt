@@ -1,0 +1,5 @@
+LINE;1;true;draw line
+WIPE;0;false;wipe
+COLOR;1;true;color
+RECT;1;false;draw rect
+DPL;1;true;draw product line

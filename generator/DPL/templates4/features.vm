@@ -1,0 +1,25 @@
+#if ($LINE)
+LINE;1;true;draw line
+#else
+LINE;1;false;draw line
+#end
+#if ($WIPE)
+WIPE;0;true;wipe
+#else
+WIPE;0;false;wipe
+#end
+#if ($COLOR)
+COLOR;1;true;color
+#else
+COLOR;1;false;color
+#end
+#if ($RECT)
+RECT;1;true;draw rect
+#else
+RECT;1;false;draw rect
+#end
+#if ($DPL)
+DPL;1;true;draw product line
+#else
+DPL;1;false;draw product line
+#end

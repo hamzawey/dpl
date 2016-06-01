@@ -1,0 +1,221 @@
+/**
+ * DPL Canvas.java
+ * @author Roberto E. Lopez-Herrejon
+ * SEP SPL Course July 2010
+ */
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.util.*;
+import java.awt.event.*;
+import javax.swing.JComponent;
+
+
+import java.awt.Point;
+
+
+@SuppressWarnings("serial")
+public class Canvas extends JComponent implements MouseListener, MouseMotionListener {
+
+	// Lists of figures objects to display
+	#if ($LINE)
+	protected List<Line> lines = new LinkedList<Line>();
+	#end
+	#if ($RECT)
+	protected List<Rectangle> rects = new LinkedList<Rectangle>();
+	#end
+	
+	// Auxiliary point
+	Point start, end;
+	
+	// Objects for creating figures to add to the canvas
+	#if ($LINE)
+	protected Line newLine = null;
+	#end
+	#if ($RECT)
+	protected Rectangle newRect = null;
+	#end
+
+	// Enum for types of figures
+	public enum FigureTypes { NONE 
+		#if ($LINE) 
+			,LINE 
+		#end 
+		#if ($RECT) 
+			,RECT 
+		#end
+	};
+	
+	// The selected default is none. Do not change.
+	public FigureTypes figureSelected = FigureTypes.NONE;
+
+	#if ($COLOR)
+	protected Color color = Color.BLACK;
+	#end
+	
+	/** Sets up the canvas. Do not change */
+	public Canvas() { 
+		this.setDoubleBuffered(true); // for display efficiency
+		this.addMouseListener(this);  // registers the mouse listener
+		this.addMouseMotionListener(this); // registers the mouse motion listener
+	}
+
+	/** Sets the selected figure. Do not change. */
+	public void selectedFigure(FigureTypes fig) {
+		figureSelected = fig;
+	}
+	
+	#if ($WIPE)
+	public void wipe() {
+		#if ($LINE)
+		this.lines.clear();
+		#end
+		#if ($RECT)
+		this.rects.clear();
+		#end
+		this.repaint();
+	}
+	#end
+	
+	#if ($COLOR)
+	public void setColor(String colorString) {
+		if (colorString.equals("Red"))
+			color = Color.red;
+		else if (colorString.equals("Green"))
+			color = Color.green;
+		else if (colorString.equals("Blue"))
+			color = Color.blue;
+		else
+			color = Color.black;
+	}
+	#end
+	
+	/** Paints the component in turn. Call whenever repaint is called. */
+	public void paintComponent(Graphics g) 	{
+		super.paintComponent(g);
+		
+		// refreshes the canvas
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, getWidth(), getHeight());
+		
+		// Paints the drawn figures
+		#if ($LINE)
+		for (Line l : lines) { l.paint(g); }
+		#end
+		#if ($RECT)
+		for (Rectangle r: rects) { r.paint(g);	}
+		#end
+	
+	}
+		
+	// **************** Mouse Handling
+	
+	/* Invoked when the mouse button has been clicked (pressed and released) on a component.
+	 * Empty implementation. Do not change.
+	 */
+	public void mouseClicked(MouseEvent e)  { }// mouseClicked
+	
+    /* Invoked when the mouse enters a component. Empty implementation.
+     * Do not change. */     
+	public void mouseEntered(MouseEvent e) { }
+          
+	/** Invoked when the mouse exits a component. Empty implementation. 
+	 * Do not change. */
+	public void mouseExited(MouseEvent e) {	}
+          
+	/** Invoked when a mouse button has been pressed on a component. */
+	public void mousePressed(MouseEvent e) {
+		switch(figureSelected) {
+		#if ($LINE)
+		case LINE : mousePressedLine(e); break;
+		#end
+		#if ($RECT)
+		case RECT: mousePressedRect(e); break;
+		#end
+		}
+	}
+     
+	/** Invoked when a mouse button has been released on a component. */
+	public void mouseReleased(MouseEvent e) {
+		switch(figureSelected) {
+		#if ($LINE)
+		case LINE : mouseReleasedLine(e); break;
+		#end
+		#if ($RECT)
+		case RECT: mouseReleasedRect(e); break;
+		#end
+		}
+	}
+	
+	/** Invoked when the mouse is dragged over a component */
+	public void mouseDragged(MouseEvent e)	{
+		switch(figureSelected) {
+		#if ($LINE)
+		case LINE : mouseDraggedLine(e); break;
+		#end
+		#if ($RECT)
+		case RECT: mouseDraggedRect(e); break;
+		#end
+		}
+	}
+
+	/* Empty implementation. Do not change. */
+	public void mouseMoved(MouseEvent e)	{ }
+
+	#if ($RECT)
+	// **************** Manage Rect
+
+	public void mousePressedRect(MouseEvent e) {
+		// If there is no line being created
+		if (newRect == null) {
+			newRect = new Rectangle (
+					#if ($COLOR) 
+						color, 
+					#end 
+					e.getX(), e.getY());
+			rects.add(newRect);
+		}
+	}
+	
+	/** Updates the end point coordinates and repaints figure */
+	public void mouseDraggedRect(MouseEvent e) {
+		newRect.setEnd(e.getX(), e.getY());
+		repaint();	
+	}
+	
+	/** Clears the reference to the new line */
+	public void mouseReleasedRect(MouseEvent e) {
+		newRect = null;
+	}
+	#end
+		
+	#if ($LINE)
+	// **************** Manage Line
+
+	public void mousePressedLine(MouseEvent e) {
+		// If there is no line being created
+		if (newLine == null) {
+			start = new Point(e.getX(), e.getY());
+			newLine = new Line (
+					#if ($COLOR) 
+						color, 
+					#end 
+					start);
+			lines.add(newLine);
+		}
+	}
+	
+	/** Updates the end point coordinates and repaints figure */
+	public void mouseDraggedLine(MouseEvent e) {
+		newLine.setEnd(new Point(e.getX(), e.getY()));
+		repaint();	
+	}
+	
+	/** Clears the reference to the new line */
+	public void mouseReleasedLine(MouseEvent e) {
+		newLine = null;
+	}
+	#end
+		
+} // Canvas

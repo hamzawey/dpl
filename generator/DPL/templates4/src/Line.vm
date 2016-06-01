@@ -1,0 +1,49 @@
+#if ($LINE)
+/**
+ * DPL Line.java
+ * @author Roberto E. Lopez-Herrejon
+ * SEP SPL Course July 2010
+ */
+
+import java.awt.*;
+
+/*
+ * Note: For this class the changes you need to do relate to color handling. 
+ */
+public class Line extends Shape {
+	
+	private Point startPoint, endPoint ;
+	#if ($COLOR)
+	private Color color;
+	#end
+	
+	public void paint(Graphics g){
+		#if ($COLOR)
+		g.setColor(color);
+		#else
+		g.setColor(Color.BLACK);
+		#end
+		g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+	}
+
+	public Line(
+			#if ($COLOR) 
+				Color color, 
+			#end 
+			Point start) {
+		startPoint = start;
+		#if ($COLOR)
+		this.color = color;
+		#end
+	}
+	
+	public void setEnd(Point end) {
+		endPoint = end;
+	}
+	
+	public Point getStart() { return startPoint; }
+	
+	public Point getEnd () { return endPoint; }
+	
+} // of Line
+#end

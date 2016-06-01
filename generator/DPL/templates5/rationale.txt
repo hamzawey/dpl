@@ -1,0 +1,3 @@
+
+add a circle feature (also with fill and line color like with rect)
+
